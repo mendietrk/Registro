@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const Ubicacion = require("../models/ubicacion.js");
 
 // Ruta GET para mostrar formulario de conexión
 router.get('/', (req, res) => {
@@ -42,18 +43,25 @@ router.get('/registro-ubicacion', (req, res) => {
   res.render('ubicacion'); // Asegúrate de tener views/registro-ubicacion.ejs
 });
 
-// Ruta POST para recibir el formulario de ubicación (si vas a guardar esos datos)
-router.post('/registro-ubicacion', (req, res) => {
+router.post('/registro-ubicacion', async (req, res) => {
+  try {
     const { nombre, latitud, longitud, fechaHora } = req.body;
-  
-    console.log('Datos de ubicación recibidos:', { nombre, latitud, longitud, fechaHora });
-  
-    // Guardar datos en la sesión temporalmente
-    req.session.ubicacion = { nombre, latitud, longitud, fechaHora };
-  
-    // Redirigir a la vista de sorpresa
-    res.redirect('/sorpresa');
-  });
+
+    await Ubicacion.create({
+      nombre,
+      latitud: parseFloat(latitud),
+      longitud: parseFloat(longitud),
+      fechaHora: new Date(fechaHora),
+    });
+
+    // Puedes elegir redirigir o enviar respuesta, pero no ambas
+    res.redirect('/sorpresa'); // ✅ Recomendado si usas una vista
+    // res.send('Ubicación registrada exitosamente'); // ❌ No usar ambas
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al registrar la ubicación');
+  }
+});
 
   router.get('/sorpresa', (req, res) => {
     res.render('sorpresa1');
