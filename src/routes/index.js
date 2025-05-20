@@ -23,7 +23,7 @@ router.post('/db/submit', async (req, res) => {
     await mongoose.connect(URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      connectTimeoutMS: 10000,
+      connectTimeoutMS: 50000,
     });
 
     // Respuesta JSON con instrucción de redirección
