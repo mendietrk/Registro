@@ -26,7 +26,7 @@ router.get('/', (req, res, next) =>
         .catch(error => {
           console.log("Error al conectar a la base de datos:", error);
         });
-        res.redirect("/index");
+        res.redirect("/registro-ubicacion");
     
   });
   

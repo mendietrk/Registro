@@ -5,6 +5,14 @@ const methodOverride = require("method-override");
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
 
+const session = require('express-session');
+
+app.use(session({
+  secret: 'mi_secreto_seguro', // cámbialo por algo más complejo en producción
+  resave: false,
+  saveUninitialized: true
+}));
+
 // Configuración de la aplicación Express
 
 app.use((req, res, next) => {

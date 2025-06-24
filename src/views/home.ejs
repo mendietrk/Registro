@@ -1,4 +1,4 @@
-<%- include ('partials/_header'); %>
+<%- include ('partials/_header1'); %>
 
 <form id="dbForm">
   <label for="db1">Usuario de la base de datos:</label>
@@ -13,57 +13,57 @@
 </form>
 
 <script>
-document.getElementById('dbForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const form = e.target;
-    const button = form.querySelector('button');
-    const loading = document.getElementById('loading');
-    const error = document.getElementById('error');
-    
-    // Validación
-    const db1 = form.db1.value.trim();
-    if (!db1) {
-        error.textContent = "Ingrese un usuario válido";
-        error.style.display = 'block';
-        return;
-    }
-    
-    // Configurar UI
-    button.disabled = true;
-    loading.style.display = 'block';
-    error.style.display = 'none';
-    
-    try {
-        // Enviar como x-www-form-urlencoded
-        const params = new URLSearchParams();
-        params.append('db1', db1);
+    document.getElementById('dbForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        const response = await fetch('/db/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: params
-        });
+        const form = e.target;
+        const button = form.querySelector('button');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
         
-        const data = await response.json();
-        
-        if (!response.ok || !data.success) {
-            throw new Error(data.message || "Error de conexión");
+        const db1 = form.db1.value.trim();
+        if (!db1) {
+            error.textContent = "Ingrese un usuario válido";
+            error.style.display = 'block';
+            return;
         }
         
-        window.location.href = "/db";
-    } catch (err) {
-        console.error("Error:", err);
-        error.textContent = err.message;
-        error.style.display = 'block';
-    } finally {
-        button.disabled = false;
-        loading.style.display = 'none';
-    }
-});
-</script>
+        button.disabled = true;
+        loading.style.display = 'block';
+        error.style.display = 'none';
+        
+        try {
+            const params = new URLSearchParams();
+            params.append('db1', db1);
+            
+            const response = await fetch('/db/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Error de conexión");
+            }
+    
+            // ✅ Redirige a la ruta indicada
+            window.location.href = data.redirectTo || "/registro-ubicacion";
+    
+        } catch (err) {
+            console.error("Error:", err);
+            error.textContent = err.message;
+            error.style.display = 'block';
+        } finally {
+            button.disabled = false;
+            loading.style.display = 'none';
+        }
+    });
+    </script>
+    
 
 <style>
 .spinner {
